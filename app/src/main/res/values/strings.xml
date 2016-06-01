@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">RollCall</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_daily_register">DailyRegister</string>
+    <string name="change_details">Change the Details</string>
+    <string name="ok">Proceed</string>
+    <string name="cancel">Cancel</string>
+    <string name="client_id">AIzaSyAXV3ragt1KbnjtZQbtdWg1T57W7cu9AJQ</string>
+    <string name="change_latedetails">Change Timings</string>
+    <string-array name="drop_down">
+        <item>P-Present</item>
+        <item>L-Late</item>
+        <item>A-Absent</item>
+        <item>E-Early</item>
+
+    </string-array>
+    <string-array name="drop_late">
+        <item>SL-Sick Leave</item>
+        <item>CL-Casual Leave</item>
+        <item>GL-General Leave</item>
+    </string-array>
+</resources>

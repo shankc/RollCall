@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="worker_name" type="id" />
+    <item name="worker_in" type="id" />
+    <item name="worket_out" type="id"/>
+    <item name="worker_table" type="id" />
+</resources>

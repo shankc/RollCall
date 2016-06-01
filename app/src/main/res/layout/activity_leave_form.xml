@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="ivorylab.apps.rollcall.LeaveForm">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:id="@+id/linearLayout3">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:hint="Name"
+            android:textSize="17dp"
+            android:id="@+id/employee_name"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+          />
+
+        <TextView
+            android:layout_marginTop="28dp"
+            android:drawableLeft="@mipmap/ic_date_from"
+            android:hint="Select Start Date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/start_date" />
+
+        <TextView
+            android:layout_marginTop="28dp"
+            android:drawableLeft="@mipmap/ic_date_to"
+            android:hint="Select End Date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="15dp"
+            android:id="@+id/end_date"
+            android:layout_weight="0.89" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout4">
+
+
+        <Button
+            android:id="@+id/cancel"
+            android:text="cancel"
+            android:drawableLeft="@mipmap/ic_cancel"
+            android:layout_margin="5dp"
+            android:background="@drawable/box_card"
+            android:layout_weight=".4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+
+        <Button
+            android:id="@+id/approve"
+            android:text="Approve"
+            android:drawableRight="@mipmap/ic_aproved"
+            android:layout_margin="5dp"
+            android:background="@drawable/box_card"
+            android:layout_weight=".4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <EditText
+        android:drawableLeft="@drawable/ic_comments"
+        android:minLines="2"
+        android:inputType="textMultiLine"
+        android:hint="Comments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/comments"
+        android:layout_below="@+id/leavedrop"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/leavedrop"
+        android:hint="Leave Type"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17dp"
+        android:text="Leave Type"
+        android:id="@+id/textView"
+        android:layout_above="@+id/leavedrop"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
+
