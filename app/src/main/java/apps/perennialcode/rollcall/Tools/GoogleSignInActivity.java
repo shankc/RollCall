@@ -1,4 +1,4 @@
-package ivorylab.apps.rollcall.Tools;
+package apps.perennialcode.rollcall.Tools;
 
 /**
  * Created by mayuukhvarshney on 25/05/16.
@@ -13,7 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import ivorylab.apps.rollcall.R;
+import apps.perennialcode.rollcall.R;
 
 public class GoogleSignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {

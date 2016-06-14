@@ -1,4 +1,4 @@
-package ivorylab.apps.rollcall;
+package apps.perennialcode.rollcall;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -35,7 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import ivorylab.apps.rollcall.Tools.config;
+import apps.perennialcode.rollcall.Tools.config;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -55,6 +57,7 @@ public class ManualAtt extends AppCompatActivity implements OnItemSelectedListen
     Spinner spinner,spinner1;
     ArrayAdapter<CharSequence> adapter,adapter1;
     String Current_Date="";
+    Boolean isConnected;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,9 +130,12 @@ public class ManualAtt extends AppCompatActivity implements OnItemSelectedListen
             EmployeeName.setText(Name);
             IN_TIME.setText(InTime);
             OUT_TIME.setText(OutTime);
+            text_intime=InTime;
+            text_outtime=OutTime;
             The_Date.setText(dte);
             Current_Date=dte;
             text_date=Current_Date;
+            Name = Absentee;
         }
 
 
@@ -214,6 +220,12 @@ IN_TIME.setOnClickListener(new View.OnClickListener() {
 
 
         //p ,l, a, e
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+      isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
         Update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,26 +235,36 @@ IN_TIME.setOnClickListener(new View.OnClickListener() {
                 inputManager.hideSoftInputFromWindow(
                         ManualAtt.this.getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
-                new ManualAttUpdate(){
-                    @Override
-                    protected void onPostExecute(Boolean result){
-                        super.onPostExecute(result);
-                        if(result){
+                if(!text_commments.equals("") && !text_date.equals("") && !text_intime.equals("") && !text_outtime.equals("") && !Name.equals("")) {
+                    if (isConnected) {
+                        new ManualAttUpdate() {
+                            @Override
+                            protected void onPostExecute(Boolean result) {
+                                super.onPostExecute(result);
+                                if (result) {
 
-                            Toast.makeText(ManualAtt.this,"Manual Attendance successfully updated :)",Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
-                            Toast.makeText(ManualAtt.this,"There was Something Wrong :(",Toast.LENGTH_SHORT).show();
-                        }
+                                    Toast.makeText(ManualAtt.this, "Manual Attendance successfully updated :)", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ManualAtt.this, "There was Something Wrong :(", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                        }.execute();
                     }
+                    else
+                    {
+                        Toast.makeText(ManualAtt.this,"Please Check Network Connection ",Toast.LENGTH_SHORT).show();
+                    }
+                }
 
-                }.execute();
+                else {
+                        Log.d("Manuatt", " Validation done came to else method on null data ");
+                        Toast.makeText(ManualAtt.this, "Please Fill in All Details", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
 
 
-
-            }
         });
 
 Cancel.setOnClickListener(new View.OnClickListener() {

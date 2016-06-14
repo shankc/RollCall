@@ -1,4 +1,4 @@
-package ivorylab.apps.rollcall;
+package apps.perennialcode.rollcall;
 
 /**
  * Created by mayuukhvarshney on 23/05/16.
@@ -26,8 +26,8 @@ public class More extends AppCompatActivity {
         More.add("Leave Application");
         More.add("Manual Attendance");
         More.add("Daily In-Out");
-        More.add("Inbox");
-        More.add("Outbox");
+       // More.add("Inbox");
+        //More.add("Outbox");
 
         mAdapter = new MyMoreAdapter(this,More);
         morelist.setAdapter(mAdapter);
@@ -47,15 +47,15 @@ public class More extends AppCompatActivity {
                     Intent intent = new Intent(More.this,DailyRegister.class);
                     startActivity(intent);
                 }
-                else if(position==3){
+                //else if(position==3){
 
-                    Intent intent = new Intent(More.this,InboxActivity.class);
-                    startActivity(intent);
-                }
-                else
-                {
+//                    Intent intent = new Intent(More.this,InboxActivity.class);
+  //                  startActivity(intent);
+   //             }
+               // else
+                //{
 
-                }
+                //}
             }
         });
 

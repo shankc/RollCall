@@ -1,4 +1,4 @@
-package ivorylab.apps.rollcall;
+package apps.perennialcode.rollcall;
 
 /**
  * Created by mayuukhvarshney on 26/05/16.

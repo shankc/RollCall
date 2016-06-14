@@ -1,4 +1,4 @@
-package ivorylab.apps.rollcall;
+package apps.perennialcode.rollcall;
 
 /**
  * Created by mayuukhvarshney on 23/05/16.
@@ -25,7 +25,7 @@ public class MyMoreAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return 5;
+        return 3;
     }
 
     @Override
@@ -66,14 +66,14 @@ public class MyMoreAdapter extends BaseAdapter {
             holder.MenuImage.setImageResource(R.drawable.ic_daily_inout);
 
         }
-        else if(position== 3) {
+       /* else if(position== 3) {
             holder.MenuImage.setImageResource(R.drawable.inbox);
 
         }
         else {
             holder.MenuImage.setImageResource(R.drawable.outbox);
 
-        }
+        }*/
         return convertView;
     }
     static class ViewHolder{

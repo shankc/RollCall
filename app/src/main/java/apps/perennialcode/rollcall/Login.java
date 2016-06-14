@@ -1,7 +1,10 @@
-package ivorylab.apps.rollcall;
+package apps.perennialcode.rollcall;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +29,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
-import ivorylab.apps.rollcall.Tools.config;
+import apps.perennialcode.rollcall.Tools.config;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -39,11 +42,20 @@ public static LinkedHashMap<String,String > UserData;
     private static final int RC_SIGN_IN = 9001;
     private String  Email;
     Button Try_Again;
+    Boolean isConnected;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         UserData = new LinkedHashMap<>();
+
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+         isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
@@ -62,11 +74,19 @@ public static LinkedHashMap<String,String > UserData;
 
     @Override
     public void onClick(View v) {
-switch(v.getId()){
-    case R.id.sign_in_button:
-        signIn();
-        break;
-}
+        if(isConnected) {
+
+
+            switch (v.getId()) {
+                case R.id.sign_in_button:
+                    signIn();
+                    break;
+            }
+        }
+        else
+        {
+            Toast.makeText(Login.this,"Please Check Network Connection ",Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void signIn() {
@@ -94,41 +114,48 @@ switch(v.getId()){
 
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
-           final GoogleSignInAccount acct = result.getSignInAccount();
-Email=acct.getEmail();
-            new GetUserDetails(){
-                @Override
-            protected void onPostExecute(Boolean result){
-                    super.onPostExecute(result);
-                    if(result)
-                    {
-                        Intent intent = new Intent(Login.this,Main2Activity.class);
-                        intent.putExtra("Email", acct.getEmail());
-                        startActivity(intent);
-                    }
-                    else
-                    {
+            final GoogleSignInAccount acct = result.getSignInAccount();
+            Email = acct.getEmail();
+          {
+                new GetUserDetails() {
+                    @Override
+                    protected void onPostExecute(Boolean result) {
+                        super.onPostExecute(result);
+                         {
+                            if (result) {
+                                Intent intent = new Intent(Login.this, Main2Activity.class);
+                                intent.putExtra("Email", acct.getEmail());
+                                startActivity(intent);
+                            } else {
 
-                        Toast.makeText(Login.this,"You Are Not Authorized!",Toast.LENGTH_LONG).show();
-                        Try_Again.setVisibility(View.VISIBLE);
-                        Try_Again.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                signIn();
+                                Toast.makeText(Login.this, "You Are Not Authorized! or there was an error!", Toast.LENGTH_LONG).show();
+                                Try_Again.setVisibility(View.VISIBLE);
+                                Try_Again.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        signIn();
+                                    }
+                                });
+                                //signIn();
                             }
-                        });
-                        //signIn();
+                        }
+
                     }
+
+                }.execute();
+
+                updateUI(true);
+            }
+
+
+        }
+                else{
+                    // Signed out, show unauthenticated UI.
+
+                    updateUI(false);
                 }
 
-            }.execute();
 
-            updateUI(true);
-        } else {
-            // Signed out, show unauthenticated UI.
-
-            updateUI(false);
-        }
     }
     private void updateUI(boolean signedIn) {
         if (signedIn) {
@@ -209,7 +236,7 @@ Email=acct.getEmail();
                 e.printStackTrace();
             }
 
-return null;
+return false;
         }
     }
 

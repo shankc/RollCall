@@ -1,64 +1,33 @@
 {
   "project_info": {
-    "project_number": "140384515802",
-    "project_id": "rollcall-4a437"
+    "project_number": "63143472149",
+    "project_id": "rollcall-1339"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:140384515802:android:bf20fed9ffa950ac",
+        "mobilesdk_app_id": "1:63143472149:android:872e3a2bb5d9bc81",
         "android_client_info": {
-          "package_name": "ivorylabs.apps.rollcall"
+          "package_name": "apps.perennialcode.rollcall"
         }
       },
       "oauth_client": [
         {
-          "client_id": "140384515802-eitaf0l871gtkm5kb3shd46lpkkkrp2p.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAXV3ragt1KbnjtZQbtdWg1T57W7cu9AJQ"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:140384515802:android:4e79a7e87cf69eb2",
-        "android_client_info": {
-          "package_name": "ivorylab.apps.rollcall"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "140384515802-m0bd1ejeptog21e1vbimh5rrgodil52a.apps.googleusercontent.com",
+          "client_id": "63143472149-fnna6u4aa7fn9h3g6qvrhujs7a9n8mrv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "ivorylab.apps.rollcall",
+            "package_name": "apps.perennialcode.rollcall",
             "certificate_hash": "5DF86E51D7E95E57521851CB8C7A3B0FC9009042"
           }
         },
         {
-          "client_id": "140384515802-eitaf0l871gtkm5kb3shd46lpkkkrp2p.apps.googleusercontent.com",
+          "client_id": "63143472149-vhmcu2k0l7tgl8vh1o08ot9v5e9bt76e.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAXV3ragt1KbnjtZQbtdWg1T57W7cu9AJQ"
+          "current_key": "AIzaSyB7YWYv_dwlv74NrVfgmQLDdjVJkPK1suo"
         }
       ],
       "services": {

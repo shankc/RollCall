@@ -1,4 +1,4 @@
-package ivorylab.apps.rollcall;
+package apps.perennialcode.rollcall;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -34,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import ivorylab.apps.rollcall.Tools.config;
+import apps.perennialcode.rollcall.Tools.config;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -50,6 +52,7 @@ public class LeaveForm extends AppCompatActivity implements OnItemSelectedListen
     Button Approve_Button,Cancel_Button;
     String dte="",tim="",textEndDate="",Name="",text_date="",Leave_Type="";
     int RegId=0;
+    boolean isConnected;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,11 +78,13 @@ public class LeaveForm extends AppCompatActivity implements OnItemSelectedListen
             } else {
                 Absentee = extras.getString("AbsentName");
                 RegId=extras.getInt("RegId");
+                Name = Absentee;
                 Log.d("LeaveForm"," the regid is => "+RegId);
             }
         } else {
             Absentee = (String) savedInstanceState.getSerializable("AbsentName");
             RegId=(int)savedInstanceState.getSerializable("RegId");
+            Name = Absentee;
         }
         if(Absentee==null){
         EmployeeName.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +101,6 @@ public class LeaveForm extends AppCompatActivity implements OnItemSelectedListen
             Log.d("LeaveForm"," the absentee name "+Absentee);
         }
 
-
         mMessageReceiver= new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -105,6 +109,7 @@ public class LeaveForm extends AppCompatActivity implements OnItemSelectedListen
                 name= extras.getString("Name");
                 RegId=extras.getInt("RegId");
                 Log.d("LeaveForm"," the name and regid =>"+name+" "+RegId);
+                Name = name;
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -181,33 +186,57 @@ EndDate.setOnClickListener(new View.OnClickListener() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
+        ConnectivityManager cm =
+                (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
 
 Approve_Button.setOnClickListener(new View.OnClickListener() {
 
     @Override
     public void onClick(View v) {
         TypedComment = Comment.getText().toString();
-        Log.d("LeaveForm","the typed comment "+TypedComment);
-       new  PostToDataBase(){
-           @Override
-       protected void onPostExecute(Boolean response) {
-               super.onPostExecute(response);
-               if (response != null) {
-                   if (response) {
-                       Toast.makeText(LeaveForm.this, "The Leave Application Posted :)", Toast.LENGTH_SHORT).show();
-                   } else {
-                       Toast.makeText(LeaveForm.this, "There was a Problem :(", Toast.LENGTH_SHORT).show();
+        Log.d("LeaveForm", "the typed comment " + TypedComment+" "+Name+" ");
+        ConnectivityManager cm =
+                (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
 
-                   }
-               }
-               else
-               {
-                   Toast.makeText(LeaveForm.this, "There was a Problem :(", Toast.LENGTH_SHORT).show();
-               }
-           }
-       }.execute();
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        if (!text_date.equals("") && !textEndDate.equals("") && !TypedComment.equals("") && !Name.equals("")) {
+            if(isConnected) {
+                Log.d("LeaveForm ", " validation sucess");
+                new PostToDataBase() {
+                    @Override
+                    protected void onPostExecute(Boolean response) {
+                        super.onPostExecute(response);
+                        if (response != null) {
+                            if (response) {
+                                Toast.makeText(LeaveForm.this, "The Leave Application Posted :)", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(LeaveForm.this, "There was a Problem :(", Toast.LENGTH_SHORT).show();
 
+                            }
+                        } else {
+                            Toast.makeText(LeaveForm.this, "There was a Problem :(", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }.execute();
+            }
+            else
+            {
+                Toast.makeText(LeaveForm.this,"Please Check the Network Connection",Toast.LENGTH_SHORT).show();
+            }
+        }
+        else
+        {
+            //Log.d("LeaveForm","Validation done came in else method for null data ");
+            Toast.makeText(LeaveForm.this,"Please Fill in All Fields",Toast.LENGTH_SHORT).show();
+        }
     }
+
 });
         Cancel_Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,6 +256,7 @@ Approve_Button.setOnClickListener(new View.OnClickListener() {
             name= extras.getString("Name");
             RegId=extras.getInt("RegId");
             Log.d("LeaveForm"," the name and regid =>"+name+" "+RegId);
+            Name=name;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

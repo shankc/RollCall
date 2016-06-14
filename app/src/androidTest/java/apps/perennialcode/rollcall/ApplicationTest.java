@@ -1,4 +1,4 @@
-package ivorylab.apps.rollcall;
+package apps.perennialcode.rollcall;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

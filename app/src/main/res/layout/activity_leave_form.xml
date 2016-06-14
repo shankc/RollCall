@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="ivorylab.apps.rollcall.LeaveForm">
+    tools:context="apps.perennialcode.rollcall.LeaveForm">
 
     <LinearLayout
         android:orientation="vertical"

@@ -1,15 +1,18 @@
-package ivorylab.apps.rollcall;
+package apps.perennialcode.rollcall;
 
 /**
- * Created by mayuukhvarshney on 17/05/16.
+ * Created by mayuukhvarshney on 16/05/16.
  *
  *
  */
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -37,70 +41,76 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ivorylab.apps.rollcall.Tools.config;
+import apps.perennialcode.rollcall.Tools.config;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+public class AbsentActivity extends AppCompatActivity {
 
-public class LateActivity extends AppCompatActivity {
-    ArrayList<String> Times;ArrayList<Employee>NAMES;
     MyAdapter mAdapter;
-    String[] options= {"Change Employee Timing"};
+    ArrayList<Employee> Names;
+
+    String Choice;
+    String[] options= {"Leave Application","Manual Attendance"};
     RecyclerView absent_list;
     ProgressWheel prog;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.absent_list);
-        Times = new ArrayList<>();
+        Names= new ArrayList<>();
         if(getSupportActionBar()!=null)
-            getSupportActionBar().setTitle("Late List");
+            getSupportActionBar().setTitle("Absent List");
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
-
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        DateFormat datetime= new SimpleDateFormat("HH:mm:ss");
-        Date date = new Date();
-        String dte,tim;
-        dte=dateFormat.format(date);
-        tim=datetime.format(date);
-
-        NAMES= new ArrayList<>();
+        // get oriinal daata the list from as a JSON call. preferably absentees list.
         absent_list= (RecyclerView) findViewById(R.id.absent_list);
         prog= (ProgressWheel) findViewById(R.id.progress_wheel);
         absent_list.setVisibility(View.INVISIBLE);
         prog.setVisibility(View.VISIBLE);
         prog.spin();
-        new GetLateEmplyees(){
-            @Override
-        protected void onPostExecute(ArrayList<Employee>array){
-                super.onPostExecute(array);
-                prog.stopSpinning();
-                prog.setVisibility(View.INVISIBLE);
-                absent_list.setVisibility(View.VISIBLE);
-                View recyclerView = findViewById(R.id.absent_list);
-                assert recyclerView != null;
-                setupRecyclerView((RecyclerView) recyclerView);
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-            }
-        }.execute();
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        if(isConnected) {
+            new GetAbsentees() {
+                @Override
+                protected void onPostExecute(ArrayList<Employee> array) {
+                    super.onPostExecute(array);
+                    prog.stopSpinning();
+                    prog.setVisibility(View.INVISIBLE);
+                    absent_list.setVisibility(View.VISIBLE);
+                    View recyclerView = findViewById(R.id.absent_list);
+                    assert recyclerView != null;
+                    setupRecyclerView((RecyclerView) recyclerView);
+                }
+
+            }.execute();
 
 
+        }
+        else
+        { prog.stopSpinning();
+            prog.setVisibility(View.INVISIBLE);
+            Toast.makeText(AbsentActivity.this,"Please Check Network Connectivity",Toast.LENGTH_SHORT).show();
+
+        }
     }
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        mAdapter= new MyAdapter(NAMES,Times);
+        mAdapter= new MyAdapter(Names);
         recyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
-
 
 
     }
     public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 
-        private ArrayList<Employee> theNames;ArrayList<String>theTime;
+        private ArrayList<Employee> theNames;
         private Boolean mTwoPane;
         private ColorGenerator generator = ColorGenerator.MATERIAL;
 
@@ -108,51 +118,58 @@ public class LateActivity extends AppCompatActivity {
             public TextView mName;
 
             public ImageView FirstLetter;
-            public TextView EntryTime;
 
             public View mView;
             public MyViewHolder(View view) {
                 super(view);
                 mName=(TextView)view.findViewById(R.id.gmailitem_title);
                 FirstLetter=(ImageView)view.findViewById(R.id.gmailitem_letter);
-                EntryTime= (TextView) view.findViewById(R.id.the_time);
-                mView=view;
+                mView = view;
 
 
             }
         }
 
 
-        public MyAdapter(ArrayList<Employee> names,ArrayList<String> times) {
-            this.theNames = names;this.theTime=times;
+        public MyAdapter(ArrayList<Employee> names) {
+            this.theNames = names;
         }
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.late_list_item, parent, false);
+                    .inflate(R.layout.absent_list_item, parent, false);
 
             return new MyViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
-
             holder.mName.setText(theNames.get(position).getUserName());
             String letter = String.valueOf(theNames.get(position).getUserName().charAt(0));
+            TextDrawable drawable = TextDrawable.builder()
+                    .buildRound(letter, generator.getRandomColor());
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(LateActivity.this);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AbsentActivity.this);
                     // Set the dialog title
-                    builder.setTitle(R.string.change_latedetails)
+                    builder.setTitle(R.string.change_details)
                             // Specify the list array, the items to be selected by default (null for none),
                             // and the listener through which to receive callbacks when items are selected
                             .setItems(options, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-
-                                        Intent intent = new Intent(LateActivity.this,ManualAtt.class);
+                                    if(which==0){
+                                        Intent intent1 = new Intent(AbsentActivity.this,LeaveForm.class);
+                                        intent1.putExtra("AbsentName",theNames.get(position).getUserName());
+                                        intent1.putExtra("RegId", theNames.get(position).getRegID());
+                                        startActivity(intent1);
+                                    }
+                                    else
+                                    {
+                                        Intent intent = new Intent(AbsentActivity.this,ManualAtt.class);
                                         intent.putExtra("AbsentName",theNames.get(position).getUserName());
                                         intent.putExtra("Name",theNames.get(position).getUserName());
                                         intent.putExtra("RegId",theNames.get(position).getRegID());
@@ -161,17 +178,14 @@ public class LateActivity extends AppCompatActivity {
                                         intent.putExtra("OutTime",theNames.get(position).getOutTime());
                                         intent.putExtra("InTime",theNames.get(position).getInTime());
                                         startActivity(intent);
-
+                                    }
                                 }
                             });
                     builder.create();
                     builder.show();
                 }
             });
-            TextDrawable drawable = TextDrawable.builder()
-                    .buildRound(letter, generator.getRandomColor());
-            holder.FirstLetter.setImageDrawable(drawable);
-            holder.EntryTime.setText(theTime.get(position).substring(0,5));
+          holder.FirstLetter.setImageDrawable(drawable);
         }
 
         @Override
@@ -179,9 +193,7 @@ public class LateActivity extends AppCompatActivity {
             return theNames.size();
         }
     }
-
-    class GetLateEmplyees extends AsyncTask<Void,Void,ArrayList<Employee>>{
-
+    class GetAbsentees extends AsyncTask<Void,Void,ArrayList<Employee>>{
 
         @Override
         protected ArrayList<Employee> doInBackground(Void... params) {
@@ -193,11 +205,10 @@ public class LateActivity extends AppCompatActivity {
             dte=dateFormat.format(date);
             tim=datetime.format(date);
             ArrayList<String> temp = new ArrayList<>();
-            ArrayList<String> tempTime= new ArrayList<>();
             SharedPreferences data = getSharedPreferences("DataStorage",0);
 
             OkHttpClient client = new OkHttpClient();
-            String url = c.getURL()+"/api/employee/GetEmployees?SuperId="+data.getString("SuperId","")+"&DateOfTransaction="+dte+"&InStatus=L";
+            String url = c.getURL()+"/api/employee/GetEmployees?SuperId="+data.getString("SuperId","")+"&DateOfTransaction="+dte+"&InStatus=A";
             Request request = new Request.Builder().url(url).build();
 
             Response response = null;
@@ -218,19 +229,20 @@ public class LateActivity extends AppCompatActivity {
                     emp.setInTime(object.getString("InTime"));
                     emp.setOutTime(object.getString("OutTime"));
                     emp.setRegID(object.getInt("RegistrationId"));
-                    NAMES.add(emp);
-                    Times.add(object.getString("InTime"));
+                    Names.add(emp);
 
                 }
-                return NAMES;
+                return Names;
 
             }
             catch (IOException | JSONException e) {
                 e.printStackTrace();
                 //return null;
             }
-            return null;
+
+          return null;
         }
     }
+
 
 }

@@ -9,7 +9,7 @@
         android:paddingTop="5dp"
         android:id="@+id/layout"
         xmlns:wheel="http://schemas.android.com/apk/res-auto"
-        tools:context="ivorylab.apps.rollcall.Main2Activity"
+        tools:context="apps.perennialcode.rollcall.Main2Activity"
         android:orientation="vertical"
         >
 

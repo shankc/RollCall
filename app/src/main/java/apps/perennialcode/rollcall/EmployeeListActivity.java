@@ -1,7 +1,10 @@
-package ivorylab.apps.rollcall;
+package apps.perennialcode.rollcall;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -29,53 +33,68 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ivorylab.apps.rollcall.Tools.config;
+import apps.perennialcode.rollcall.Tools.config;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
 /**
  * Created by mayuukhvarshney on 23/05/16.
  */
 public class EmployeeListActivity extends AppCompatActivity {
     ArrayList<Employee> AllNames;
     MyAdapter mAdapter;
-RecyclerView absentlist;
+    RecyclerView absentlist;
     ProgressWheel prog;
 
     @Override
-    protected void  onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.absent_list);
-        AllNames= new ArrayList<>();
-        absentlist= (RecyclerView) findViewById(R.id.absent_list);
-        prog= (ProgressWheel) findViewById(R.id.progress_wheel);
+        AllNames = new ArrayList<>();
+        absentlist = (RecyclerView) findViewById(R.id.absent_list);
+        prog = (ProgressWheel) findViewById(R.id.progress_wheel);
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
 
         absentlist.setVisibility(View.INVISIBLE);
         prog.setVisibility(View.VISIBLE);
         prog.spin();
- new GetAllEmployees(){
-     @Override
- protected void onPostExecute(ArrayList<Employee> array){
-         super.onPostExecute(array);
+        if (isConnected) {
+            new GetAllEmployees() {
+                @Override
+                protected void onPostExecute(ArrayList<Employee> array) {
+                    super.onPostExecute(array);
 
-         prog.stopSpinning();
-         prog.setVisibility(View.INVISIBLE);
-         absentlist.setVisibility(View.VISIBLE);
-        //AllNames=array;
-
-
-
-         View recyclerView = findViewById(R.id.absent_list);
-         assert recyclerView != null;
-         setupRecyclerView((RecyclerView) recyclerView);
-
-     }
- }.execute();
+                    prog.stopSpinning();
+                    prog.setVisibility(View.INVISIBLE);
+                    absentlist.setVisibility(View.VISIBLE);
+                    //AllNames=array;
 
 
+                    View recyclerView = findViewById(R.id.absent_list);
+                    assert recyclerView != null;
+                    setupRecyclerView((RecyclerView) recyclerView);
 
+                }
+            }.execute();
+
+
+        }
+
+
+    else
+
+    {
+        prog.stopSpinning();
+        prog.setVisibility(View.INVISIBLE);
+        //absentlist.setVisibility(View.VISIBLE);
+        Toast.makeText(EmployeeListActivity.this, "Please Check Network Connection", Toast.LENGTH_SHORT).show();
     }
+}
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         mAdapter= new MyAdapter(AllNames);
         recyclerView.setAdapter(mAdapter);

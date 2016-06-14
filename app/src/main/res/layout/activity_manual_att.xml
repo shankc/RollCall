@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="ivorylab.apps.rollcall.ManualAtt">
+    tools:context="apps.perennialcode.rollcall.ManualAtt">
 
     <LinearLayout
         android:orientation="vertical"
@@ -31,42 +31,57 @@
             android:layout_height="wrap_content"
             android:id="@+id/the_date" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
         <TextView
             android:layout_marginTop="25dp"
             android:hint="In-Time"
             android:drawableLeft="@drawable/ic_time"
-            android:layout_width="match_parent"
+            android:layout_width="138dp"
             android:layout_height="wrap_content"
             android:textSize="17dp"
             android:id="@+id/in_time" />
 
+            <Spinner
+            android:id="@+id/instatus"
+            android:layout_width="130dp"
 
-        <TextView
-            android:layout_marginTop="25dp"
-            android:hint="Out-Time"
-            android:drawableLeft="@drawable/ic_time"
-            android:layout_width="match_parent"
+                android:layout_marginLeft="45dp"
+                android:layout_gravity="center_vertical"
+
             android:layout_height="wrap_content"
-            android:textSize="17dp"
+            android:hint="In-Status"/>
 
-            android:id="@+id/out_time" />
+            </LinearLayout>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="40dp">
-        <Spinner
-            android:id="@+id/instatus"
-            android:layout_width="130dp"
-            android:layout_height="wrap_content"
-            android:hint="In-Status"/>
 
-        <Spinner
-            android:id="@+id/outstatus"
-            android:layout_width="130dp"
-            android:layout_height="wrap_content"
-            android:hint="Out-Status"
-            android:layout_toEndOf="@id/instatus"
-            android:layout_toRightOf="@id/instatus" />
+    <TextView
+        android:layout_marginTop="25dp"
+        android:hint="Out-Time"
+        android:drawableLeft="@drawable/ic_time"
+        android:layout_width="137dp"
+        android:layout_height="wrap_content"
+        android:textSize="17dp"
+
+        android:id="@+id/out_time" />
+
+    <Spinner
+        android:id="@+id/outstatus"
+        android:layout_width="130dp"
+        android:layout_marginLeft="45dp"
+
+        android:layout_height="wrap_content"
+        android:hint="Out-Status"
+        android:layout_gravity="center_vertical"
+        android:layout_toEndOf="@id/instatus"
+        android:layout_toRightOf="@id/instatus" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -109,10 +124,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/manual_comment"
-        android:layout_below="@+id/linearLayout"
+        android:layout_above="@+id/linearLayout2"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="50dp" />
+        android:layout_marginBottom="26dp" />
 
 </RelativeLayout>
 
